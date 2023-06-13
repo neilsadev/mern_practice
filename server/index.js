@@ -18,13 +18,15 @@ const app = express(); // Create an instance of the Express application
 app.use(express.json()); // Parse JSON bodies in incoming requests
 app.use(helmet()); // Add various security headers to HTTP responses
 // Set Cross-Origin Embedder Policy header to 'cross-origin' for all responses
-app.use(helmet.crossOriginEmbedderPolicy({ policy: "cross-origin" }));
+app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 app.use(morgan("common")); // Use the 'common' predefined format for request logging
 app.use(bodyParser.json({ limit: "30mb", extended: true })); // Parse JSON bodies with a limit of 30mb
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true })); // Parse URL-encoded bodies with a limit of 30mb
 app.use(cors()); // Enable Cross-Origin Resource Sharing (CORS)
 // Serve static files from the 'public/assets' directory under the '/assets' route
 app.use("/assets", express.static(path.join(__dirname, "public/assets")));
+
+import { register } from "./controllers/auth.js";
 
 /* File Storage */
 
@@ -39,6 +41,10 @@ const storage = multer.diskStorage({
 });
 // Create an instance of multer with the configured storage options
 const upload = multer({ storage });
+
+/* Routes with files */
+
+app.post("/auth/register", upload.single("picture"), register);
 
 /* Mongoose setup */
 
