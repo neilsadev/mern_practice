@@ -43,8 +43,11 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 /* Routes with files */
-
+// Handle POST request to /auth/register endpoint with file upload
 app.post("/auth/register", upload.single("picture"), register);
+
+/* Routes */
+app.use("/auth", authRoutes);
 
 /* Mongoose setup */
 
